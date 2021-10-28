@@ -7,7 +7,14 @@ import networkx as nx
 #G.add_nodes_from(range(100, 110))
 
 def dominant(g):
+    """
+        A Faire:         
+        - Ecrire une fonction qui retourne le dominant du graphe non dirigé g passé en parametre.
+        - cette fonction doit retourner la liste des noeuds d'un petit dominant de g
 
+        :param g: le graphe est donné dans le format networkx : https://networkx.github.io/documentation/stable/reference/classes/graph.html
+
+    """
     return g.nodes  # pas terrible :) mais c'est un dominant
 
 
