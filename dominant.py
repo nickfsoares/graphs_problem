@@ -8,6 +8,7 @@ def treating_node(g,node_label):
   new_node['neighbors'] = [neighbors for neighbors in g.neighbors(node_label)]
   return new_node
 
+
 def dominant(g):
     """
         A Faire:         
@@ -29,17 +30,21 @@ def dominant(g):
         label_dominant_nodes.update([new_node['label']])  #we update the dominant
         neighbors_plus_nodes.update([new_node['label']])
         neighbors_plus_nodes.update(new_node['neighbors'])
-
         ######################checking neighbors########################
-        neighbors = [treating_node(g,n) for n in new_node['neighbors']]
-        #checking neighbors' neighbors 
         maxScore = 0
-        for n in neighbors:
-            n['score'] = round(len(n['neighbors'])/n['weight'],4)
-            if n['score']>maxScore:
-                maxScore = n['score']
-                new_node = n          # chosing the best neighbor
-        ################################################################
+        for n in new_node['neighbors']:
+            neighbors = treating_node(g,n)
+            neighbors['score'] = round(len(neighbors['neighbors'])/neighbors['weight'])
+            if neighbors['score']>maxScore:
+                maxScore = neighbors['score']
+                #checking neighbors' neighbors 
+            for nn in neighbors['neighbors']:
+                neighbors_neighbors = treating_node(g,nn)
+                neighbors_neighbors['score'] = round(len(neighbors_neighbors['neighbors'])/neighbors_neighbors['weight'],4)
+                if neighbors_neighbors['score']>maxScore:
+                    maxScore = neighbors_neighbors['score']
+                    new_node = neighbors_neighbors          # chosing the best neighbor
+            ################################################################
 
         if new_node['label'] in label_dominant_nodes:
             try:
@@ -47,9 +52,9 @@ def dominant(g):
             except: pass
         else:                     # if node is not in the dominant 
             label_dominant_nodes.update([new_node['label']])  #we update the dominant
-            neighbors_plus_nodes.update(new_node['neighbors'])
             neighbors_plus_nodes.update([new_node['label']])
-        
+            neighbors_plus_nodes.update(new_node['neighbors'])
+            
     return list(label_dominant_nodes)  # pas terrible :) mais c'est un dominant
 
 
