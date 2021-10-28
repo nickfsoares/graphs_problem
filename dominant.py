@@ -25,29 +25,32 @@ def dominant(g):
     label_dominant_nodes = set()
     neighbors_plus_nodes = set()
     while (set(g.nodes)!= neighbors_plus_nodes):
-    new_node = treating_node(g,node_label)            #first we select a node randomly
-    label_dominant_nodes.update([new_node['label']])  #we update the dominant
-    neighbors_plus_nodes.update([new_node['label']])
-    #checking neighbors
-    neighbors = [treating_node(g,n) for n in new_node['neighbors']]
-    #checking neighbors' neighbors 
-    maxScore = 0
-    for n in neighbors:
-        n['score'] = round(len(n['neighbors'])/n['weight'],4)
-        if n['score']>maxScore:
-        maxScore = n['score']
-        new_node = n          # chosing the best neighbor
-    if new_node['label'] in label_dominant_nodes:
-        try:
-            node_label = np.random.choice(list(g.nodes - neighbors_plus_nodes))
-        except: pass
-    else:
-        #appending node at dominant set 
-        label_dominant_nodes.update([new_node['label']])
-        neighbors_plus_nodes.update(new_node['neighbors'])
+        new_node = treating_node(g,node_label)            #first we select a node randomly
+        label_dominant_nodes.update([new_node['label']])  #we update the dominant
         neighbors_plus_nodes.update([new_node['label']])
-    
-    return label_dominant_nodes  # pas terrible :) mais c'est un dominant
+        neighbors_plus_nodes.update(new_node['neighbors'])
+
+        ######################checking neighbors########################
+        neighbors = [treating_node(g,n) for n in new_node['neighbors']]
+        #checking neighbors' neighbors 
+        maxScore = 0
+        for n in neighbors:
+            n['score'] = round(len(n['neighbors'])/n['weight'],4)
+            if n['score']>maxScore:
+                maxScore = n['score']
+                new_node = n          # chosing the best neighbor
+        ################################################################
+
+        if new_node['label'] in label_dominant_nodes:
+            try:
+                node_label = np.random.choice(list(g.nodes - neighbors_plus_nodes))
+            except: pass
+        else:                     # if node is not in the dominant 
+            label_dominant_nodes.update([new_node['label']])  #we update the dominant
+            neighbors_plus_nodes.update(new_node['neighbors'])
+            neighbors_plus_nodes.update([new_node['label']])
+        
+    return list(label_dominant_nodes)  # pas terrible :) mais c'est un dominant
 
 
 #########################################
