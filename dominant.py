@@ -1,10 +1,12 @@
 import sys, os, time
 import networkx as nx
+import numpy as np 
 
-# creating an empty Graph 
-#G = nx.Graph()
-#adding random nodes
-#G.add_nodes_from(range(100, 110))
+def treating_node(g,node_label): 
+  new_node = g.nodes()[node_label]
+  new_node['label'] = node_label
+  new_node['neighbors'] = [neighbors for neighbors in g.neighbors(node_label)]
+  return new_node
 
 def dominant(g):
     """
@@ -15,7 +17,37 @@ def dominant(g):
         :param g: le graphe est donné dans le format networkx : https://networkx.github.io/documentation/stable/reference/classes/graph.html
 
     """
-    return g.nodes  # pas terrible :) mais c'est un dominant
+    #removing self-loops
+    g.remove_edges_from(nx.selfloop_edges(g))
+
+    #selecting a random node 
+    node_label = np.random.choice(g.nodes)
+    label_dominant_nodes = set()
+    neighbors_plus_nodes = set()
+    while (set(g.nodes)!= neighbors_plus_nodes):
+    new_node = treating_node(g,node_label)            #first we select a node randomly
+    label_dominant_nodes.update([new_node['label']])  #we update the dominant
+    neighbors_plus_nodes.update([new_node['label']])
+    #checking neighbors
+    neighbors = [treating_node(g,n) for n in new_node['neighbors']]
+    #checking neighbors' neighbors 
+    maxScore = 0
+    for n in neighbors:
+        n['score'] = round(len(n['neighbors'])/n['weight'],4)
+        if n['score']>maxScore:
+        maxScore = n['score']
+        new_node = n          # chosing the best neighbor
+    if new_node['label'] in label_dominant_nodes:
+        try:
+            node_label = np.random.choice(list(g.nodes - neighbors_plus_nodes))
+        except: pass
+    else:
+        #appending node at dominant set 
+        label_dominant_nodes.update([new_node['label']])
+        neighbors_plus_nodes.update(new_node['neighbors'])
+        neighbors_plus_nodes.update([new_node['label']])
+    
+    return label_dominant_nodes  # pas terrible :) mais c'est un dominant
 
 
 #########################################
