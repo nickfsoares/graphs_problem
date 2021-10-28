@@ -32,8 +32,8 @@ import numpy as np
 # plt.show()
 
 # FROM DOMINANT.PY
-input_dir = os.path.abspath(sys.argv[0])
-graph_filename = sorted(os.listdir(input_dir))[0]
+input_dir = os.path.abspath(sys.argv[1])
+graph_filename = sorted(os.listdir(input_dir)).loc[0]
 # importer le graphe
 g = dm.load_graph(os.path.join(input_dir, graph_filename))
 pos = nx.spring_layout(g) # <---this line is new.  the pos here replaces nx.spring_layout below.
