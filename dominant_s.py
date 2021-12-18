@@ -1,6 +1,8 @@
 import sys, os, time
 import networkx as nx
 import random
+
+
 def number_of_non_visited_neighbors(g, node, visited):
     if node in visited:
         return -float('inf')
